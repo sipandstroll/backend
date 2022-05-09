@@ -20,9 +20,11 @@ package main
 // [START import]
 import (
 	"fmt"
-	"log"
 	"net/http"
-	"os"
+	"time"
+
+	"google.golang.org/appengine"
+	"google.golang.org/appengine/datastore"
 )
 
 // [END import]
@@ -30,22 +32,16 @@ import (
 
 func main() {
 	http.HandleFunc("/", indexHandler)
-
-	// [START setting_port]
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-		log.Printf("Defaulting to port %s", port)
-	}
-
-	log.Printf("Listening on port %s", port)
-	if err := http.ListenAndServe(":"+port, nil); err != nil {
-		log.Fatal(err)
-	}
-	// [END setting_port]
+	http.HandleFunc("/event", eventHandler)
+	appengine.Main()
 }
 
 // [END main_func]
+
+type Event struct {
+	Name string
+	Date time.Time
+}
 
 // [START indexHandler]
 
@@ -59,4 +55,32 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // [END indexHandler]
+
+// [START eventHandler]
+
+func eventHandler(w http.ResponseWriter, r *http.Request) {
+	ctx := appengine.NewContext(r)
+
+	e1 := Event{
+		Name: "Test",
+		Date: time.Now(),
+	}
+
+	key, err := datastore.Put(ctx, datastore.NewIncompleteKey(ctx, "event", nil), &e1)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var e2 Event
+	if err = datastore.Get(ctx, key, &e2); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Fprintf(w, "Stored and retrieved the Event named %q", e2.Name)
+}
+
+// [END eventHandler]
+
 // [END gae_go111_app]
