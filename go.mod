@@ -2,4 +2,11 @@ module helloworld
 
 go 1.15
 
-require google.golang.org/appengine v1.6.7
+require (
+	cloud.google.com/go/firestore v1.6.1 // indirect
+	cloud.google.com/go/storage v1.22.1 // indirect
+	firebase.google.com/go v3.13.0+incompatible
+	github.com/gin-gonic/gin v1.7.7
+	google.golang.org/api v0.80.0
+	google.golang.org/appengine v1.6.7
+)

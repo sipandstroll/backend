@@ -20,21 +20,46 @@ package main
 // [START import]
 import (
 	"fmt"
+	"google.golang.org/appengine/datastore"
 	"net/http"
 	"time"
 
 	"google.golang.org/appengine"
-	"google.golang.org/appengine/datastore"
 )
 
 // [END import]
 // [START main_func]
 
-func main() {
-	http.HandleFunc("/", indexHandler)
-	http.HandleFunc("/event", eventHandler)
-	appengine.Main()
-}
+//func main() {
+//	opt := option.WithCredentialsFile("./serviceAccountKey.json")
+//	app, err := firebase.NewApp(context.Background(), nil, opt)
+//	if err != nil {
+//		print(err)
+//	}
+//	_ = app
+//
+//	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+//		if r.URL.Path != "/" {
+//			http.NotFound(w, r)
+//			return
+//		}
+//		fmt.Fprint(w, "Hello, World!")
+//		client, err := app.Auth(r.Context())
+//		if err != nil {
+//			log.Fatalf("error getting Auth client: %v\n", err)
+//		}
+//
+//		token, err := client.VerifyIDToken(r.Context(), "eyJhbGciOiJSUzI1NiIsImtpZCI6IjZmOGUxY2IxNTY0MTQ2M2M2ZGYwZjMzMzk0YjAzYzkyZmNjODg5YWMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vbWRzLXByb2plY3QtMzQ5MzE2IiwiYXVkIjoibWRzLXByb2plY3QtMzQ5MzE2IiwiYXV0aF90aW1lIjoxNjUzMjEwMjQyLCJ1c2VyX2lkIjoiZkU1bjNNRVE1bldZTUV1NVpSeFdrcHhlWE9DMiIsInN1YiI6ImZFNW4zTUVRNW5XWU1FdTVaUnhXa3B4ZVhPQzIiLCJpYXQiOjE2NTMyMTAyNDMsImV4cCI6MTY1MzIxMzg0MywicGhvbmVfbnVtYmVyIjoiKzQwNzQxMTk4NjA2IiwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJwaG9uZSI6WyIrNDA3NDExOTg2MDYiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwaG9uZSJ9fQ.3T1Qx89PYlIHKe8qhAqOghUeLxnT3T1MuoFQiR8t_xa7WzZ_2mE7OiMzmVK7q3sfW53fOGWBvc7gBavwylQRgCjUq-3hxsZaL-Y6bsMmknJh1laZqzOMokCLetJD9OI5Kk9soy8hjqV-IPdWenHYGWew0_fqqUD-dbHjSm0-AQT0A4KPAefbTYGYkklmT_aogDGP5O_IkZQfe0-33XSiS8Hdat6cNd4GtJ-THgzHGnby2dnEESnKONkM33f3ZacssxIjTxvIfAiCqxrBYrdV7DQwV73MPbH-46RDc9xgh_FtlrfpyJI38x5j5_lXNdD6uyXOlmbEbsC7QqymbC0LeA")
+//		if err != nil {
+//			log.Fatalf("error verifying ID token: %v\n", err)
+//		}
+//
+//		log.Printf("Verified ID token: %v\n", token)
+//	})
+//	http.HandleFunc("/event", eventHandler)
+//	http.ListenAndServe(":3000", nil)
+//	appengine.Main()
+//}
 
 // [END main_func]
 
@@ -43,16 +68,12 @@ type Event struct {
 	Date time.Time
 }
 
-// [START indexHandler]
+func testUser(res http.ResponseWriter, req *http.Request) {
+	_, _ = res, req
 
-// indexHandler responds to requests with our greeting.
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		http.NotFound(w, r)
-		return
-	}
-	fmt.Fprint(w, "Hello, World!")
 }
+
+// [START indexHandler]
 
 // [END indexHandler]
 
@@ -81,6 +102,6 @@ func eventHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Stored and retrieved the Event named %q", e2.Name)
 }
 
-// [END eventHandler]
-
-// [END gae_go111_app]
+//[END eventHandler]
+//
+//[END gae_go111_app]
