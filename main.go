@@ -21,10 +21,15 @@ func main() {
 	r.Use(middleware.AuthMiddleware)
 
 	r.GET("/helloAuth", func(context *gin.Context) {
-		context.JSON(http.StatusOK, gin.H{"data": "user"})
+		value, _ := context.Get("UUID")
+		print(value)
+		context.JSON(http.StatusOK, gin.H{"data": value})
 	})
 
-	r.Run(":3000")
+	err := r.Run(":3000")
+	if err != nil {
+		return
+	}
 
 	_, _ = r, firebaseAuth
 }
