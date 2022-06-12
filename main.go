@@ -2,34 +2,51 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 	"helloworld/config"
-	"helloworld/middleware"
+	"helloworld/entities/user"
 	"net/http"
 )
 
+// gcp V&qTmCt:kOB)"T9`
 func main() {
+	dsn := "host=127.0.0.1 user=iustin password=iustin dbname=sip port=5432 sslmode=disable TimeZone=Europe/Bucharest"
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+
+	err = db.AutoMigrate(&user.User{})
+	if err != nil {
+		print(err)
+		return
+	}
+
+	print(db, err)
+
 	// initialize gin Engine
-	r := gin.Default()
+	router := gin.Default()
+
+	user.InitializeRoutes(router, db)
 
 	// configure firebase
 	firebaseAuth := config.SetupFirebase()
 
-	r.Use(func(c *gin.Context) {
+	router.Use(func(c *gin.Context) {
 		c.Set("firebaseAuth", firebaseAuth)
 	})
 
-	r.Use(middleware.AuthMiddleware)
+	//router.Use(middleware.AuthMiddleware)
 
-	r.GET("/helloAuth", func(context *gin.Context) {
+	router.GET("/helloAuth", func(context *gin.Context) {
 		value, _ := context.Get("UUID")
 		print(value)
 		context.JSON(http.StatusOK, gin.H{"data": value})
 	})
 
-	err := r.Run(":3000")
+	err = router.Run(":3000")
 	if err != nil {
 		return
 	}
 
-	_, _ = r, firebaseAuth
+	_, _ = router, firebaseAuth
+	_ = db
 }
