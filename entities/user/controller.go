@@ -3,6 +3,7 @@ package user
 import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+	"net/http"
 )
 
 func InitializeRoutes(engine *gin.Engine, db *gorm.DB) {
@@ -23,10 +24,15 @@ func InitializeRoutes(engine *gin.Engine, db *gorm.DB) {
 	})
 
 	engine.GET("/user", func(context *gin.Context) {
-		var newUser User
-		if err := context.BindJSON(&newUser); err != nil {
+		var user User
+		if err := context.BindJSON(&user); err != nil {
 			return
 		}
-		db.Save(newUser)
+		tx := db.First(&user)
+		if tx.Error == nil {
+			context.JSON(http.StatusOK, user)
+		} else {
+			context.JSON(http.StatusNotFound, gin.H{})
+		}
 	})
 }
