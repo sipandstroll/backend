@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 	"helloworld/config"
 	"helloworld/entities/user"
+	"helloworld/middleware"
 	"net/http"
 )
 
@@ -25,8 +26,6 @@ func main() {
 	// initialize gin Engine
 	router := gin.Default()
 
-	user.InitializeRoutes(router, db)
-
 	// configure firebase
 	firebaseAuth := config.SetupFirebase()
 
@@ -34,7 +33,9 @@ func main() {
 		c.Set("firebaseAuth", firebaseAuth)
 	})
 
-	//router.Use(middleware.AuthMiddleware)
+	router.Use(middleware.AuthMiddleware)
+
+	user.InitializeRoutes(router, db)
 
 	router.GET("/helloAuth", func(context *gin.Context) {
 		value, _ := context.Get("UUID")
