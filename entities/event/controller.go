@@ -19,6 +19,20 @@ func InitializeRoutes(engine *gin.Engine, db *gorm.DB) {
 		context.JSON(http.StatusOK, events)
 	})
 
+	engine.GET("/event/mine", func(context *gin.Context) {
+		var events []Event
+		uidN, _ := context.Get("UUID")
+		uid, _ := uidN.(string)
+
+		tx := db.Where("user_uid = ?", uid).Find(&events)
+
+		if tx.Error != nil {
+			context.JSON(http.StatusNotFound, gin.H{})
+			return
+		}
+		context.JSON(http.StatusOK, events)
+	})
+
 	engine.GET("/event/:eventId", func(context *gin.Context) {
 		eventId := context.Param("eventId")
 		var event Event
