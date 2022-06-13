@@ -55,4 +55,31 @@ func InitializeRoutes(engine *gin.Engine, db *gorm.DB) {
 
 	})
 
+	engine.DELETE("/event/:eventId", func(context *gin.Context) {
+		eventId := context.Param("eventId")
+		var event Event
+		tx := db.First(&event, eventId)
+
+		if tx.Error != nil {
+			context.JSON(http.StatusNotFound, gin.H{})
+			return
+		}
+
+		uidN, _ := context.Get("UUID")
+		uid, _ := uidN.(string)
+
+		if event.UserUid != uid {
+			context.JSON(http.StatusUnauthorized, gin.H{})
+			return
+		}
+
+		txDeleted := db.Delete(event)
+		if txDeleted.Error != nil {
+			context.JSON(http.StatusBadRequest, txDeleted.Error)
+			return
+		}
+
+		context.JSON(http.StatusOK, event)
+	})
+
 }
