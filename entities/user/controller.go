@@ -24,7 +24,6 @@ func InitializeRoutes(engine *gin.Engine, db *gorm.DB) {
 		if err := context.BindJSON(&newUser); err != nil {
 			return
 		}
-
 		// the user must be authenticated to create its own row in users table
 		if uid != newUser.Uid {
 			context.JSON(http.StatusUnauthorized, gin.H{})
@@ -91,6 +90,7 @@ func InitializeRoutes(engine *gin.Engine, db *gorm.DB) {
 			context.JSON(http.StatusOK, user)
 			return
 		} else {
+			print(tx.Error)
 			context.JSON(http.StatusNotFound, gin.H{})
 			return
 		}

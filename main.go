@@ -5,6 +5,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"helloworld/config"
+	"helloworld/entities/event"
 	"helloworld/entities/user"
 	"helloworld/middleware"
 	"net/http"
@@ -16,6 +17,11 @@ func main() {
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	err = db.AutoMigrate(&user.User{})
+	if err != nil {
+		print(err)
+		return
+	}
+	err = db.AutoMigrate(&event.Event{})
 	if err != nil {
 		print(err)
 		return
@@ -36,6 +42,7 @@ func main() {
 	router.Use(middleware.AuthMiddleware)
 
 	user.InitializeRoutes(router, db)
+	event.InitializeRoutes(router, db)
 
 	router.GET("/helloAuth", func(context *gin.Context) {
 		value, _ := context.Get("UUID")
