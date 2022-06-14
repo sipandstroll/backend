@@ -16,4 +16,4 @@ Run the Cloud SQL Auth proxy to connect to DB. Learn more here: https://cloud.go
 
 # Deploy
 
-Deployments are made automatically to production using the GitHub Actions pipeline when a new commit is made on the 'main' branch.
+Deployments are made automatically to production using the GitHub Actions pipeline when a new commit is made on the `main` branch.
