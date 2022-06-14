@@ -7,9 +7,9 @@ If you want to test as authorized in Postman.
 
 Spor !
 
-# DB Conneciton
+# DB Connection
 
-Run the Cloud SQL Auth proxy to connect o DB. Learn more here: https://cloud.google.com/sql/docs/postgres/connect-instance-auth-proxy
+Run the Cloud SQL Auth proxy to connect to DB. Learn more here: https://cloud.google.com/sql/docs/postgres/connect-instance-auth-proxy
 ```
 ./cloud_sql_proxy -instances=INSTANCE_CONNECTION_NAME=tcp:5432
 ```
