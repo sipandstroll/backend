@@ -33,10 +33,11 @@ func main() {
 		dbPwd          = getenv("DB_PASS", "iustin")                 // e.g. 'my-db-password'
 		unixSocketPath = getenv("INSTANCE_UNIX_SOCKET", "127.0.0.1") // e.g. '/cloudsql/project:region:instance'
 		dbName         = getenv("DB_NAME", "sip")                    // e.g. 'my-database'
+		dbPort         = getenv("DB_PORT", "5432")
 	)
 
-	dbURI := fmt.Sprintf("user=%s password=%s database=%s host=%s sslmode=disable TimeZone=Europe/Bucharest",
-		dbUser, dbPwd, dbName, unixSocketPath)
+	dbURI := fmt.Sprintf("user=%s password=%s database=%s host=%s port=%s sslmode=disable TimeZone=Europe/Bucharest",
+		dbUser, dbPwd, dbName, unixSocketPath, dbPort)
 
 	dbPool, err := sql.Open("pgx", dbURI)
 
