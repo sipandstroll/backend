@@ -21,3 +21,10 @@ instance_class: F1
 automatic_scaling:
   min_instances: 1
   max_instances: 1
+
+env_variables:
+  DB_USER: iustin
+  DB_PASS: iustin
+  INSTANCE_UNIX_SOCKET: /cloudsql/mds-project-349316:europe-central2:mdsproject
+  DB_NAME: sip
+  DB_PORT: 5432
