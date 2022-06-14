@@ -1,20 +1,53 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	"fmt"
 	"helloworld/config"
 	"helloworld/entities/event"
 	"helloworld/entities/user"
 	"helloworld/middleware"
+	"log"
 	"net/http"
+	"os"
+
+	"database/sql"
+
+	"github.com/gin-gonic/gin"
+	_ "github.com/jackc/pgx/v4/stdlib"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
+
+// mustGetEnv is a helper function for getting environment variables.
+// Displays a warning if the environment variable is not set.
+func mustGetenv(k string) string {
+	v := os.Getenv(k)
+	if v == "" {
+		log.Fatalf("Warning: %s environment variable not set.\n", k)
+	}
+	return v
+}
 
 // gcp V&qTmCt:kOB)"T9`
 func main() {
-	dsn := "host=127.0.0.1 user=iustin password=iustin dbname=sip port=5432 sslmode=disable TimeZone=Europe/Bucharest"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	var (
+		dbUser         = mustGetenv("DB_USER")              // e.g. 'my-db-user'
+		dbPwd          = mustGetenv("DB_PASS")              // e.g. 'my-db-password'
+		unixSocketPath = mustGetenv("INSTANCE_UNIX_SOCKET") // e.g. '/cloudsql/project:region:instance'
+		dbName         = mustGetenv("DB_NAME")              // e.g. 'my-database'
+	)
+
+	dbURI := fmt.Sprintf("user=%s password=%s database=%s host=%s sslmode=disable TimeZone=Europe/Bucharest",
+		dbUser, dbPwd, dbName, unixSocketPath)
+
+	dbPool, err := sql.Open("pgx", dbURI)
+
+	db, err := gorm.Open(postgres.New(postgres.Config{
+		Conn: dbPool,
+	}), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 
 	err = db.AutoMigrate(&user.User{})
 	if err != nil {

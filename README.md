@@ -6,3 +6,10 @@ If you want to test as authorized in Postman.
 3. Add in postman Authorization as header and value: "Bearer ${JWT}"
 
 Spor !
+
+# DB Conneciton
+
+Run the Cloud SQL Auth proxy to connect o DB. Learn more here: https://cloud.google.com/sql/docs/postgres/connect-instance-auth-proxy
+```
+./cloud_sql_proxy -instances=INSTANCE_CONNECTION_NAME=tcp:5432
+```
