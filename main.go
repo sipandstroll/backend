@@ -6,7 +6,6 @@ import (
 	"helloworld/entities/event"
 	"helloworld/entities/user"
 	"helloworld/middleware"
-	"log"
 	"net/http"
 	"os"
 
@@ -19,23 +18,21 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-// mustGetEnv is a helper function for getting environment variables.
-// Displays a warning if the environment variable is not set.
-func mustGetenv(k string) string {
-	v := os.Getenv(k)
-	if v == "" {
-		log.Fatalf("Warning: %s environment variable not set.\n", k)
+func getenv(key, fallback string) string {
+	value := os.Getenv(key)
+	if len(value) == 0 {
+		return fallback
 	}
-	return v
+	return value
 }
 
 // gcp V&qTmCt:kOB)"T9`
 func main() {
 	var (
-		dbUser         = mustGetenv("DB_USER")              // e.g. 'my-db-user'
-		dbPwd          = mustGetenv("DB_PASS")              // e.g. 'my-db-password'
-		unixSocketPath = mustGetenv("INSTANCE_UNIX_SOCKET") // e.g. '/cloudsql/project:region:instance'
-		dbName         = mustGetenv("DB_NAME")              // e.g. 'my-database'
+		dbUser         = getenv("DB_USER", "iustin")                 // e.g. 'my-db-user'
+		dbPwd          = getenv("DB_PASS", "iustin")                 // e.g. 'my-db-password'
+		unixSocketPath = getenv("INSTANCE_UNIX_SOCKET", "127.0.0.1") // e.g. '/cloudsql/project:region:instance'
+		dbName         = getenv("DB_NAME", "sip")                    // e.g. 'my-database'
 	)
 
 	dbURI := fmt.Sprintf("user=%s password=%s database=%s host=%s sslmode=disable TimeZone=Europe/Bucharest",
