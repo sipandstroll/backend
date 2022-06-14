@@ -27,3 +27,4 @@ env_variables:
   DB_PASS: iustin
   INSTANCE_UNIX_SOCKET: /cloudsql/mds-project-349316:europe-central2:mdsproject
   DB_NAME: sip
+  DB_PORT: 5432

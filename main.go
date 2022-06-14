@@ -34,9 +34,10 @@ func main() {
 		unixSocketPath = getenv("INSTANCE_UNIX_SOCKET", "127.0.0.1") // e.g. '/cloudsql/project:region:instance'
 		dbName         = getenv("DB_NAME", "sip")                    // e.g. 'my-database'
 		dbPort         = getenv("DB_PORT", "5432")
+		appPort        = getenv("PORT", "3000")
 	)
 
-	dbURI := fmt.Sprintf("user=%s password=%s database=%s host=%s port=%s sslmode=disable TimeZone=Europe/Bucharest",
+	dbURI := fmt.Sprintf("user=%s password=%s database=%s host=%s port=%s TimeZone=Europe/Bucharest",
 		dbUser, dbPwd, dbName, unixSocketPath, dbPort)
 
 	dbPool, err := sql.Open("pgx", dbURI)
@@ -81,7 +82,7 @@ func main() {
 		context.JSON(http.StatusOK, gin.H{"data": value})
 	})
 
-	err = router.Run(":3000")
+	err = router.Run(":" + appPort)
 	if err != nil {
 		return
 	}
